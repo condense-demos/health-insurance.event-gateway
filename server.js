@@ -9,7 +9,7 @@ const KAFKA_BROKERS = process.env.KAFKA_BROKERS
   : ["localhost:9092"];
 const KAFKA_TOPIC = process.env.KAFKA_TOPIC || "insurance.application.events";
 const KAFKA_CLIENT_ID = process.env.KAFKA_CLIENT_ID || "http-to-kafka-gateway";
-const FASTIFY_PORT = parseInt(process.env.FASTIFY_PORT || "3000", 10);
+const FASTIFY_PORT = parseInt(process.env.portNumber || "3000", 10);
 const LOG_LEVEL = process.env.LOG_LEVEL || "info";
 
 // --- Logger Setup ---
