@@ -1,0 +1,37 @@
+[
+  {
+    "env_name": "KAFKA_BROKERS",
+    "variable_type": "String",
+    "mandatory": false,
+    "default_value": "localhost:9092",
+    "about_variable": "Comma-separated list of Kafka broker addresses."
+  },
+  {
+    "env_name": "KAFKA_TOPIC",
+    "variable_type": "Output Topic",
+    "mandatory": false,
+    "default_value": "insurance.application.events",
+    "about_variable": "The Kafka topic to publish events to."
+  },
+  {
+    "env_name": "KAFKA_CLIENT_ID",
+    "variable_type": "String",
+    "mandatory": false,
+    "default_value": "http-to-kafka-gateway",
+    "about_variable": "Client ID for the Kafka producer."
+  },
+  {
+    "env_name": "FASTIFY_PORT",
+    "variable_type": "Integer",
+    "mandatory": false,
+    "default_value": 3000,
+    "about_variable": "The port on which the Fastify server will listen."
+  },
+  {
+    "env_name": "LOG_LEVEL",
+    "variable_type": "String",
+    "mandatory": false,
+    "default_value": "info",
+    "about_variable": "Logging level (e.g., info, debug, error)."
+  }
+]
