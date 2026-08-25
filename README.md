@@ -24,19 +24,21 @@ The service is configured using environment variables:
 
 - `KAFKA_BROKERS`: Comma-separated list of Kafka broker addresses (e.g., `localhost:9092`). Default: `localhost:9092`
 - `KAFKA_TOPIC`: The Kafka topic to publish events to. Default: `insurance.application.events`
-- `KAFKA_CLIENT_ID`: Client ID for the Kafka producer. Default: `http-to-kafka-gateway`
+- `KAFKA_CLIENT_ID`: Client ID for the Kafka producer. Default: `https://github.com/condense-demos/health-insurance.event-gateway`
 - `FASTIFY_PORT`: The port on which the Fastify server will listen. Default: `3000`
 - `LOG_LEVEL`: Logging level (e.g., `info`, `debug`, `error`). Default: `info`
 
 ### Installation (Local)
 
 1. Clone the repository:
+
    ```bash
    git clone <repository_url>
-   cd http-to-kafka-gateway
+   cd https://github.com/condense-demos/health-insurance.event-gateway
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -49,13 +51,14 @@ The service is configured using environment variables:
 ### Docker
 
 1. Build the Docker image:
+
    ```bash
-   docker build -t http-to-kafka-gateway .
+   docker build -t https://github.com/condense-demos/health-insurance.event-gateway .
    ```
 
 2. Run the Docker container (replace with your Kafka broker details):
    ```bash
-   docker run -p 3000:3000 -e KAFKA_BROKERS=your_kafka_broker:9092 -e KAFKA_TOPIC=your_kafka_topic http-to-kafka-gateway
+   docker run -p 3000:3000 -e KAFKA_BROKERS=your_kafka_broker:9092 -e KAFKA_TOPIC=your_kafka_topic https://github.com/condense-demos/health-insurance.event-gateway
    ```
 
 ## API Endpoint
@@ -77,6 +80,7 @@ Publishes an event to Kafka.
 ```
 
 **Validation:**
+
 - `applicationId` must not be empty.
 - `eventType` must not be empty.
 - `eventId` must not be empty.
@@ -86,6 +90,7 @@ Publishes an event to Kafka.
 **Responses:**
 
 - **202 Accepted:** Event successfully accepted for publishing.
+
   ```json
   {
     "accepted": true,
@@ -96,6 +101,7 @@ Publishes an event to Kafka.
   ```
 
 - **400 Bad Request:** Malformed request or validation failure.
+
   ```json
   {
     "accepted": false,

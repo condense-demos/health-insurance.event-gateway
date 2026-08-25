@@ -2,14 +2,14 @@
   {
     "env_name": "KAFKA_BROKERS",
     "variable_type": "String",
-    "mandatory": false,
+    "mandatory": true,
     "default_value": "localhost:9092",
     "about_variable": "Comma-separated list of Kafka broker addresses."
   },
   {
     "env_name": "KAFKA_TOPIC",
     "variable_type": "Output Topic",
-    "mandatory": false,
+    "mandatory": true,
     "default_value": "insurance.application.events",
     "about_variable": "The Kafka topic to publish events to."
   },
@@ -33,5 +33,17 @@
     "mandatory": false,
     "default_value": "info",
     "about_variable": "Logging level (e.g., info, debug, error)."
+  },
+  {
+    "env_name": "KAFKA_USERNAME",
+    "variable_type": "String",
+    "mandatory": false,
+    "about_variable": "Username for Kafka SASL authentication."
+  },
+  {
+    "env_name": "KAFKA_PASSWORD",
+    "variable_type": "Password",
+    "mandatory": false,
+    "about_variable": "Password for Kafka SASL authentication."
   }
 ]

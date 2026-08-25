@@ -7,14 +7,17 @@ const mockProducerSend = jest.fn();
 const mockProducerConnect = jest.fn();
 const mockProducerDisconnect = jest.fn();
 
-jest.mock('kafkajs', () => ({
-  Kafka: jest.fn(() => ({
-    producer: jest.fn(() => ({
-      connect: mockProducerConnect,
-      disconnect: mockProducerDisconnect,
-      send: mockProducerSend,
-    })),
+// Create a spy for the Kafka constructor
+const KafkaConstructorSpy = jest.fn(() => ({
+  producer: jest.fn(() => ({
+    connect: mockProducerConnect,
+    disconnect: mockProducerDisconnect,
+    send: mockProducerSend,
   })),
+}));
+
+jest.mock('kafkajs', () => ({
+  Kafka: KafkaConstructorSpy,
 }));
 
 // Mock pino-pretty transport
@@ -31,13 +34,22 @@ jest.mock('pino', () => {
 describe('HTTP to Kafka Gateway Service', () => {
   let server;
   let logger;
+  let originalEnv;
+
+  beforeAll(() => {
+    originalEnv = process.env; // Save original env
+  });
 
   beforeEach(async () => {
+    // Reset process.env for each test
+    process.env = { ...originalEnv };
+
     // Clear mocks before each test
     mockProducerSend.mockClear();
     mockProducerConnect.mockClear();
     mockProducerDisconnect.mockClear();
     pino.mockClear();
+    KafkaConstructorSpy.mockClear();
 
     // Dynamically import server.js to reset its state for each test
     // This is important because fastify instance is created at module level
@@ -51,6 +63,10 @@ describe('HTTP to Kafka Gateway Service', () => {
     if (server) {
       await server.close();
     }
+  });
+
+  afterAll(() => {
+    process.env = originalEnv; // Restore original env
   });
 
   test('should accept a valid event and publish to Kafka', async () => {
@@ -234,5 +250,41 @@ describe('HTTP to Kafka Gateway Service', () => {
     expect(mockProducerSend).toHaveBeenCalledTimes(1);
     const sentMessage = JSON.parse(mockProducerSend.mock.calls[0][0].messages[0].value);
     expect(sentMessage.payload).toEqual({});
+  });
+
+  // New test cases for Kafka authentication
+  test('Kafka constructor should be called with SASL config when env vars are set', async () => {
+    process.env.KAFKA_USERNAME = 'testuser';
+    process.env.KAFKA_PASSWORD = 'testpassword';
+
+    // Re-require server.js to pick up new env vars
+    jest.isolateModules(() => {
+      server = require('./server');
+    });
+
+    expect(KafkaConstructorSpy).toHaveBeenCalledTimes(1);
+    const kafkaConfig = KafkaConstructorSpy.mock.calls[0][0];
+    expect(kafkaConfig.sasl).toEqual({
+      mechanism: 'scram-sha-512',
+      username: 'testuser',
+      password: 'testpassword',
+    });
+    expect(kafkaConfig.ssl).toBe(true);
+  });
+
+  test('Kafka constructor should be called without SASL config when env vars are not set', async () => {
+    // Ensure username and password are not set
+    delete process.env.KAFKA_USERNAME;
+    delete process.env.KAFKA_PASSWORD;
+
+    // Re-require server.js to pick up new env vars
+    jest.isolateModules(() => {
+      server = require('./server');
+    });
+
+    expect(KafkaConstructorSpy).toHaveBeenCalledTimes(1);
+    const kafkaConfig = KafkaConstructorSpy.mock.calls[0][0];
+    expect(kafkaConfig.sasl).toBeUndefined();
+    expect(kafkaConfig.ssl).toBeUndefined();
   });
 });
