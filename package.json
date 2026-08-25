@@ -1,0 +1,19 @@
+{
+  "name": "kafka-processor",
+  "version": "1.0.0",
+  "description": "A Node.js application for processing Kafka messages.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

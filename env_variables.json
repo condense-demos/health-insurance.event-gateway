@@ -1,0 +1,73 @@
+[
+  {
+    "env_name": "KAFKA_BROKERS",
+    "variable_type": "String",
+    "mandatory": true,
+    "about_variable": "Comma-separated list of Kafka broker addresses."
+  },
+  {
+    "env_name": "KAFKA_INPUT_TOPIC",
+    "variable_type": "Input Topic",
+    "mandatory": true,
+    "about_variable": "Kafka topic for input messages."
+  },
+  {
+    "env_name": "KAFKA_OUTPUT_TOPIC",
+    "variable_type": "Output Topic",
+    "mandatory": true,
+    "about_variable": "Kafka topic for processed messages."
+  },
+  {
+    "env_name": "KAFKA_DEAD_LETTER_TOPIC",
+    "variable_type": "Output Topic",
+    "mandatory": false,
+    "default_value": "dlt-topic",
+    "about_variable": "Kafka topic for messages that failed processing."
+  },
+  {
+    "env_name": "KAFKA_GROUP_ID",
+    "variable_type": "String",
+    "mandatory": true,
+    "about_variable": "Consumer group ID."
+  },
+  {
+    "env_name": "LOG_LEVEL",
+    "variable_type": "String",
+    "mandatory": false,
+    "default_value": "info",
+    "about_variable": "Application logging level."
+  },
+  {
+    "env_name": "PRODUCT_MIN_AGE",
+    "variable_type": "Integer",
+    "mandatory": false,
+    "default_value": 18,
+    "about_variable": "Minimum allowed age for a product."
+  },
+  {
+    "env_name": "PRODUCT_MAX_AGE",
+    "variable_type": "Integer",
+    "mandatory": false,
+    "default_value": 65,
+    "about_variable": "Maximum allowed age for a product."
+  },
+  {
+    "env_name": "FINANCIAL_COVERAGE_RATIO_LIMIT",
+    "variable_type": "Float",
+    "mandatory": false,
+    "default_value": 5.0,
+    "about_variable": "Maximum allowed coverage income ratio."
+  },
+  {
+    "env_name": "KAFKA_SASL_USERNAME",
+    "variable_type": "Password",
+    "mandatory": true,
+    "about_variable": "Username for Kafka SASL authentication."
+  },
+  {
+    "env_name": "KAFKA_SASL_PASSWORD",
+    "variable_type": "Password",
+    "mandatory": true,
+    "about_variable": "Password for Kafka SASL authentication."
+  }
+]
