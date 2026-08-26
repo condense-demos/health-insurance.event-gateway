@@ -5,7 +5,7 @@ const logger = require("./utils/logger");
 const kafka = new Kafka({
   clientId: "kafka-processor",
   brokers: config.kafka.brokers,
-  ssl: true,
+  ssl: false,
   sasl: {
     mechanism: "scram-sha-512",
     username: process.env.KAFKA_SASL_USERNAME,
@@ -30,7 +30,6 @@ const connectConsumer = async () => {
   await consumer.connect();
   logger.info("Kafka Consumer connected");
 };
-
 
 const disconnectConsumer = async () => {
   await consumer.disconnect();
