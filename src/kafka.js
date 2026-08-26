@@ -31,9 +31,23 @@ const connectConsumer = async () => {
   logger.info("Kafka Consumer connected");
 };
 
+
 const disconnectConsumer = async () => {
   await consumer.disconnect();
   logger.info("Kafka Consumer disconnected");
+};
+
+const sendMessage = async (topic, message) => {
+  try {
+    await producer.send({
+      topic,
+      messages: [{ value: JSON.stringify(message) }],
+    });
+    logger.info(`Message sent to topic ${topic}: ${JSON.stringify(message)}`);
+  } catch (error) {
+    logger.error(`Error sending message to topic ${topic}: ${error.message}`);
+    throw error;
+  }
 };
 
 module.exports = {
@@ -43,4 +57,5 @@ module.exports = {
   disconnectProducer,
   connectConsumer,
   disconnectConsumer,
+  sendMessage,
 };

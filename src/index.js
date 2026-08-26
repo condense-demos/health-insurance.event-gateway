@@ -19,11 +19,11 @@ const run = async () => {
 
         const processedResult = await processApplicationEvent(event);
 
-        // Publish result to output topic or DLT
+        await kafka.sendMessage(process.env.KAFKA_OUTPUT_TOPIC, processedResult);
         // Commit offset
       } catch (error) {
         logger.error(`Error processing message: ${error.message}`);
-        // Publish to DLT
+        await kafka.sendMessage(process.env.KAFKA_DLT_TOPIC, { error: error.message, originalMessage: event });
       }
     },
   });

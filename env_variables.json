@@ -18,7 +18,7 @@
     "about_variable": "Kafka topic for processed messages."
   },
   {
-    "env_name": "KAFKA_DEAD_LETTER_TOPIC",
+    "env_name": "KAFKA_DLT_TOPIC",
     "variable_type": "Output Topic",
     "mandatory": false,
     "default_value": "dlt-topic",

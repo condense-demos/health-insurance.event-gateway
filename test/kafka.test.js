@@ -3,7 +3,11 @@ const { Kafka } = require("kafkajs");
 // Mock kafkajs to check constructor arguments
 jest.mock("kafkajs", () => ({
   Kafka: jest.fn().mockImplementation(() => ({
-    producer: jest.fn(() => ({ connect: jest.fn(), disconnect: jest.fn() })),
+    producer: jest.fn(() => ({
+      connect: jest.fn(),
+      disconnect: jest.fn(),
+      send: jest.fn(), // Added mock for producer.send
+    })),
     consumer: jest.fn(() => ({
       connect: jest.fn(),
       disconnect: jest.fn(),
@@ -13,12 +17,17 @@ jest.mock("kafkajs", () => ({
   })),
 }));
 
+const { producer, sendMessage } = require("../src/kafka"); // Added sendMessage to import
+const logger = require("../src/utils/logger");
+
 describe("Kafka Client Configuration", () => {
   const OLD_ENV = process.env;
 
   beforeEach(() => {
     jest.resetModules(); // Most important - it clears the cache
     process.env = { ...OLD_ENV }; // Make a copy
+    logger.info = jest.fn(); // Mock logger.info
+    logger.error = jest.fn(); // Mock logger.error
   });
 
   afterAll(() => {
@@ -60,5 +69,41 @@ describe("Kafka Client Configuration", () => {
     // Further assertion to ensure sasl property is undefined or not present if not configured.
     const callArgs = Kafka.mock.calls[0][0];
     expect(callArgs.sasl).toBeUndefined();
+  });
+});
+
+describe("Kafka Producer", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    logger.info = jest.fn();
+    logger.error = jest.fn();
+  });
+
+  test("sendMessage should send a message to the specified topic", async () => {
+    const topic = "test-topic";
+    const message = { id: 1, value: "test" };
+    producer.send.mockResolvedValueOnce();
+
+    await sendMessage(topic, message);
+
+    expect(producer.send).toHaveBeenCalledWith({
+      topic,
+      messages: [{ value: JSON.stringify(message) }],
+    });
+    expect(logger.info).toHaveBeenCalledWith(
+      `Message sent to topic ${topic}: ${JSON.stringify(message)}`
+    );
+  });
+
+  test("sendMessage should log an error and re-throw if sending fails", async () => {
+    const topic = "test-topic";
+    const message = { id: 1, value: "test" };
+    const errorMessage = "Failed to send message";
+    producer.send.mockRejectedValueOnce(new Error(errorMessage));
+
+    await expect(sendMessage(topic, message)).rejects.toThrow(errorMessage);
+    expect(logger.error).toHaveBeenCalledWith(
+      `Error sending message to topic ${topic}: ${errorMessage}`
+    );
   });
 });
