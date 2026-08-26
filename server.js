@@ -78,7 +78,7 @@ process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
 // --- Routes ---
-server.post("/", async (request, reply) => {
+server.post("/app", async (request, reply) => {
   const { eventId, eventType, applicationId, timestamp, payload } =
     request.body;
 
