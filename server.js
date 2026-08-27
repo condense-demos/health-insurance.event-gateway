@@ -2,6 +2,7 @@ require("dotenv").config();
 const fastify = require("fastify");
 const { Kafka } = require("kafkajs");
 const pino = require("pino");
+const cors = require("@fastify/cors");
 
 // --- Configuration from Environment Variables ---
 const KAFKA_BROKERS = process.env.KAFKA_BROKERS
@@ -57,6 +58,12 @@ const producer = kafka.producer();
 // --- Fastify Server Setup ---
 const server = fastify({
   logger: logger,
+});
+
+server.register(cors, {
+  origin: "*", // Allow all origins
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Adjust as needed
+  allowedHeaders: ["Content-Type", "Authorization"], // Adjust as needed
 });
 
 // --- Graceful Shutdown Handler ---
