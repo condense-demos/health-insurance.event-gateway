@@ -114,7 +114,6 @@ server.post("/app", async (request, reply) => {
 
     reply.status(202).send({
       accepted: true,
-      eventId,
       applicationId,
       eventType,
     });
