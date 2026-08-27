@@ -86,36 +86,10 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 
 // --- Routes ---
 server.post("/app", async (request, reply) => {
-  const { eventId, eventType, applicationId, timestamp, payload } =
-    request.body;
+  const requestBody = request.body;
+  const payload = requestBody.payload;
 
-  server.log.info({ eventId, eventType, applicationId }, "Request received");
-
-  // Validation
-  if (!applicationId) {
-    return reply.status(400).send({
-      accepted: false,
-      message: "Validation failed: applicationId must not be empty.",
-    });
-  }
-  if (!eventType) {
-    return reply.status(400).send({
-      accepted: false,
-      message: "Validation failed: eventType must not be empty.",
-    });
-  }
-  if (!eventId) {
-    return reply.status(400).send({
-      accepted: false,
-      message: "Validation failed: eventId must not be empty.",
-    });
-  }
-  if (!timestamp) {
-    return reply.status(400).send({
-      accepted: false,
-      message: "Validation failed: timestamp must not be empty.",
-    });
-  }
+  server.log.info(requestBody, "Request received");
 
   const messagePayload = payload === undefined ? {} : payload;
 
@@ -126,20 +100,15 @@ server.post("/app", async (request, reply) => {
         {
           key: applicationId,
           value: JSON.stringify({
-            eventId,
-            eventType,
             applicationId,
-            timestamp,
+            eventType,
             payload: messagePayload,
           }),
         },
       ],
     });
 
-    server.log.info(
-      { eventId, eventType, applicationId },
-      "Event published to Kafka.",
-    );
+    server.log.info({ eventType, applicationId }, "Event published to Kafka.");
 
     reply.status(202).send({
       accepted: true,
@@ -149,7 +118,7 @@ server.post("/app", async (request, reply) => {
     });
   } catch (error) {
     server.log.error(
-      { error: error.message, eventId, eventType, applicationId },
+      { error: error.message, eventType, applicationId },
       "Kafka publication failed.",
     );
     reply.status(503).send({
