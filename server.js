@@ -88,6 +88,8 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 server.post("/app", async (request, reply) => {
   const requestBody = request.body;
   const payload = requestBody.payload;
+  const applicationId = requestBody.applicationId;
+  const eventType = requestBody.eventType;
 
   server.log.info(requestBody, "Request received");
 
@@ -98,7 +100,7 @@ server.post("/app", async (request, reply) => {
       topic: KAFKA_TOPIC,
       messages: [
         {
-          key: applicationId,
+          key: requestBody.applicationId,
           value: JSON.stringify({
             applicationId,
             eventType,
