@@ -112,10 +112,13 @@ server.post("/app", async (request, reply) => {
 
     server.log.info({ eventType, applicationId }, "Event published to Kafka.");
 
-    reply.status(202).send({
-      accepted: true,
-      applicationId,
-      eventType,
+    reply.status(200).send({
+      ok: true,
+      gatewayStatus: 200,
+      body: {
+        applicationId,
+        eventType,
+      },
     });
   } catch (error) {
     server.log.error(
@@ -123,9 +126,9 @@ server.post("/app", async (request, reply) => {
       "Kafka publication failed.",
     );
     reply.status(503).send({
-      accepted: false,
-      message: "Service unavailable: Failed to publish event to Kafka.",
-      error: error.message,
+      ok: false,
+      gatewayStatus: 503,
+      error: "Service unavailable: Failed to publish event to Kafka.",
     });
   }
 });
